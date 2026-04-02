@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <titleWritely AI</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial;
+      background: linear-gradient(135deg, #1e1e2f, #3a3a5a);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .box {
+      background: #2b2b40;
+      padding: 30px;
+      border-radius: 10px;
+      width: 320px;
+      text-align: center;
+      box-shadow: 0 0 20px rgba(0,0,0,0.4);
+    }
+
+    h2 { color: white; }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border: none;
+      border-radius: 5px;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      background: #00c896;
+      border: none;
+      border-radius: 5px;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      background: #00a87a;
+    }
+
+    p {
+      color: #aaa;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    #forgotBox { display: none; }
+  </style>
+</head>
+
+<body>
+
+<div class="box">
+  <h2 id="title">Login</h2>
+
+  <input type="email" id="email" placeholder="Email">
+  <input type="password" id="password" placeholder="Password">
+
+  <button onclick="handleAuth()" id="mainBtn">Login</button>
+
+  <p onclick="toggleMode()" id="switchText">
+    Don't have account? Signup
+  </p>
+
+  <p onclick="showForgot()">Forgot Password?</p>
+
+  <!-- FORGOT -->
+  <div id="forgotBox">
+    <input id="fpEmail" placeholder="Enter Email">
+    <button onclick="sendOtp()">Send OTP</button>
+
+    <input id="fpOtp" placeholder="Enter OTP">
+    <button onclick="verifyOtp()">Verify OTP</button>
+
+    <input id="fpNew" placeholder="New Password">
+    <button onclick="resetPass()">Reset Password</button>
+  </div>
+
+  <button onclick="googleLogin()">Login with Google</button>
+</div>
+
+<script>
+let isLogin = true;
+
+// TOGGLE LOGIN / SIGNUP
+function toggleMode() {
+  isLogin = !isLogin;
+
+  document.getElementById("title").innerText =
+    isLogin ? "Login" : "Signup";
+
+  document.getElementById("mainBtn").innerText =
+    isLogin ? "Login" : "Signup";
+
+  document.getElementById("switchText").innerText =
+    isLogin
+      ? "Don't have account? Signup"
+      : "Already have account? Login";
+}
+
+// LOGIN + SIGNUP
+async function handleAuth() {
+  let email = document.getElementById("email").value;
+  let password = document.getElementById("password").value;
+
+  if (!email || !password) {
+    alert("Fill all fields");
+    return;
+  }
+
+  let url = isLogin
+  ? "https://writely-backend-x2y0.onrender.com/login"
+  : "https://writely-backend-x2y0.onrender.com/signup";
+  try {
+    let res = await fetch(url, {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({ email, password })
+    });
+
+    let data = await res.json();
+
+    if (data.success) {
+      localStorage.setItem("loggedIn", "true");
+      localStorage.setItem("email", email);
+
+      window.location.href = "index.html";
+    } else {
+      alert(data.msg);
+    }
+
+  } catch (err) {
+    alert("Server error");
+  }
+}
+
+// FORGOT PASSWORD
+function showForgot() {
+  document.getElementById("forgotBox").style.display = "block";
+}
+
+// OTP DEMO
+let savedOtp = "";
+
+function sendOtp() {
+  savedOtp = Math.floor(1000 + Math.random() * 9000).toString();
+  alert("OTP: " + savedOtp);
+}
+
+function verifyOtp() {
+  let otp = document.getElementById("fpOtp").value;
+
+  if (otp === savedOtp) {
+    alert("OTP verified");
+  } else {
+    alert("Wrong OTP");
+  }
+}
+
+function resetPass() {
+  let newPass = document.getElementById("fpNew").value;
+
+  if (!newPass) {
+    alert("Enter new password");
+    return;
+  }
+
+  alert("Password reset (demo)");
+}
+
+// GOOGLE LOGIN (FAKE)
+function googleLogin() {
+  let email = prompt("Enter Gmail:");
+
+  if (email) {
+    localStorage.setItem("email", email);
+    localStorage.setItem("loggedIn", "true");
+
+    window.location.href = "profile.html";
+  }
+}
+</script>
+
+</body>
+</html>

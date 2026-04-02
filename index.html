@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Writely AI</title>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<!-- LOGIN CHECK -->
+<script>
+if (localStorage.getItem("loggedIn") !== "true") {
+  window.location.href = "login.html";
+}
+</script>
+
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <button onclick="newChat()">➕ New Chat</button>
+
+    <div id="chatList"></div>
+
+    <button onclick="openProfile()">👤 Profile</button>
+    <button onclick="logout()">🚪 Logout</button>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+
+   <div class="header">
+  <button class="menu-btn" onclick="toggleMenu()">☰</button>
+  <h2>🤖 Writely AI</h2>
+</div>
+
+    <!-- HOME -->
+    <div id="homeScreen" class="home">
+      <h1>What can I help with?</h1>
+
+      <div class="quick-actions">
+        <button onclick="document.getElementById('input').value='Create an image of '">
+          🖼 Create Image
+        </button>
+
+        <button onclick="document.getElementById('input').value='Summarize this: '">
+          📄 Summarize
+        </button>
+
+        <button onclick="document.getElementById('input').value='Explain this topic: '">
+          ➕ More
+        </button>
+      </div>
+    </div>
+
+    <!-- CHAT -->
+    <div data-captcha-enable="true" style="display:none;"></div>
+<script async="async" data-cfasync="false" src="https://pl29036769.profitablecpmratenetwork.com/38d9bf4255a8918f23d7acfc7c85e0e0/invoke.js"></script>
+<div id="container-38d9bf4255a8918f23d7acfc7c85e0e0"></div>
+
+    <div id="chatBox" class="chat-box"></div>
+
+    <!-- INPUT -->
+    <div class="input-area">
+      <textarea id="input" placeholder="Ask anything..."></textarea>
+
+      <button onclick="sendMessage()">Send</button>
+      <button onclick="startVoice()">voice</button>
+      <button onclick="watchAd()">🎁 Free</button>
+    </div>
+
+  </div>
+
+</div>
+
+<!-- SCRIPT (IMPORTANT LAST) -->
+<!-- OGAds -->
+<script defer src="https://appchecker.space/cp/js/4wpq7"></script>
+
+<!-- Tera JS (MOST IMPORTANT LAST) -->
+<script src="script.js"></script>
+
+<script src="https://pl29036770.profitablecpmratenetwork.com/66/ce/c0/66cec097724d6b0848f305aa5302a682.js"></script>
+
+<script>
+if (sessionStorage.getItem("adShown")) {
+  // ad skip
+} else {
+  sessionStorage.setItem("adShown", "yes");
+}
+</script>
+
+</body>
+</html>

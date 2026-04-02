@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Profile - Writely AI</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial;
+      background: linear-gradient(135deg, #1e1e2f, #3a3a5a);
+      color: white;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: 50px auto;
+      background: #2b2b40;
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.5);
+      text-align: center;
+    }
+
+    img {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid #00c896;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border: none;
+      border-radius: 5px;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      background: #00c896;
+      border: none;
+      border-radius: 5px;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      background: #00a87a;
+    }
+
+    .logout {
+      background: red;
+    }
+
+    .logout:hover {
+      background: darkred;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+  <h2>My Profile</h2>
+
+  <img id="profilePic" src="https://via.placeholder.com/120">
+
+  <input type="file" id="uploadPic">
+
+  <input type="text" id="name" placeholder="Your Name">
+  <input type="email" id="email" disabled>
+  <textarea id="bio" placeholder="Your Bio"></textarea>
+
+  <button onclick="saveProfile()">Save Profile</button>
+
+  <button class="logout" onclick="logout()">Logout</button>
+</div>
+
+<script>
+// LOGIN CHECK
+if (localStorage.getItem("loggedIn") !== "true") {
+  window.location.href = "login.html";
+}
+
+// LOAD DATA
+document.getElementById("email").value =
+  localStorage.getItem("email") || "";
+
+document.getElementById("name").value =
+  localStorage.getItem("name") || "";
+
+document.getElementById("bio").value =
+  localStorage.getItem("bio") || "";
+
+if (localStorage.getItem("profilePic")) {
+  document.getElementById("profilePic").src =
+    localStorage.getItem("profilePic");
+}
+
+// SAVE PROFILE
+function saveProfile() {
+  let name = document.getElementById("name").value;
+  let bio = document.getElementById("bio").value;
+
+  localStorage.setItem("name", name);
+  localStorage.setItem("bio", bio);
+
+  alert("Profile saved!");
+}
+
+// IMAGE UPLOAD
+document.getElementById("uploadPic").addEventListener("change", function() {
+  let file = this.files[0];
+  let reader = new FileReader();
+
+  reader.onload = function() {
+    localStorage.setItem("profilePic", reader.result);
+    document.getElementById("profilePic").src = reader.result;
+  };
+
+  reader.readAsDataURL(file);
+});
+
+// LOGOUT
+function logout() {
+  localStorage.clear();
+  window.location.href = "login.html";
+}
+</script>
+
+</body>
+</html>

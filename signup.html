@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Writely AI - Signup</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    body{
+      font-family: Arial;
+      background: linear-gradient(135deg,#667eea,#764ba2);
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      height:100vh;
+      margin:0;
+    }
+
+    .box{
+      background:#fff;
+      padding:30px;
+      border-radius:12px;
+      width:300px;
+      box-shadow:0 10px 30px rgba(0,0,0,0.2);
+      text-align:center;
+    }
+
+    h2{
+      margin-bottom:20px;
+    }
+
+    input{
+      width:100%;
+      padding:10px;
+      margin:10px 0;
+      border:1px solid #ccc;
+      border-radius:6px;
+    }
+
+    button{
+      width:100%;
+      padding:10px;
+      border:none;
+      border-radius:6px;
+      background:#667eea;
+      color:white;
+      font-weight:bold;
+      cursor:pointer;
+    }
+
+    button:hover{
+      background:#5a67d8;
+    }
+
+    .login{
+      margin-top:15px;
+      font-size:14px;
+    }
+
+    .login a{
+      color:#667eea;
+      text-decoration:none;
+      font-weight:bold;
+    }
+
+    .loader{
+      display:none;
+      margin-top:10px;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="box">
+  <h2>🚀 Create Account</h2>
+
+  <input id="email" placeholder="Enter Email">
+  <input id="pass" type="password" placeholder="Enter Password">
+
+  <button onclick="signup()">Sign Up</button>
+
+  <div id="loader" class="loader">Creating...</div>
+
+  <div class="login">
+    Already have account? <a href="login.html">Login</a>
+  </div>
+</div>
+
+<script>
+
+async function signup(){
+
+  let email = document.getElementById("email").value;
+  let password = document.getElementById("pass").value;
+
+  if(!email || !password){
+    alert("Fill all fields ❌");
+    return;
+  }
+
+  document.getElementById("loader").style.display = "block";
+
+  let res = await fetch("http://localhost:3000/signup",{
+    method:"POST",
+    headers:{
+      "Content-Type":"application/json"
+    },
+    body: JSON.stringify({email,password})
+  });
+
+  let data = await res.json();
+
+  document.getElementById("loader").style.display = "none";
+
+  if(data.msg === "Signup success"){
+    alert("Account created ✅");
+
+    window.location.href = "login.html";
+  }else{
+    alert(data.msg);
+  }
+
+}
+
+</script>
+
+</body>
+</html>
