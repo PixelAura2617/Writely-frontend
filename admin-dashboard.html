@@ -37,6 +37,7 @@ body {
   display:flex;
   gap:15px;
   margin-bottom:20px;
+  flex-wrap:wrap;
 }
 
 .card {
@@ -45,6 +46,7 @@ body {
   border-radius:10px;
   flex:1;
   text-align:center;
+  min-width:120px;
 }
 
 /* SEARCH */
@@ -56,7 +58,7 @@ body {
   padding:10px;
   border-radius:6px;
   border:none;
-  width:250px;
+  width:200px;
 }
 
 .search button {
@@ -65,6 +67,8 @@ body {
   border-radius:6px;
   background:#3b82f6;
   color:white;
+  cursor:pointer;
+  margin-left:5px;
 }
 
 /* USER CARD */
@@ -73,6 +77,11 @@ body {
   padding:15px;
   border-radius:10px;
   margin-bottom:10px;
+  transition:0.3s;
+}
+
+.user-card:hover {
+  background:#273449;
 }
 
 button {
@@ -83,15 +92,23 @@ button {
   cursor:pointer;
 }
 
-.green { background:#22c55e; }
-.red { background:#ef4444; }
-.orange { background:#f59e0b; }
+.green { background:#22c55e; color:white; }
+.red { background:#ef4444; color:white; }
+.orange { background:#f59e0b; color:white; }
 
 /* LOADER */
 .loader {
   text-align:center;
   margin-top:20px;
   display:none;
+  color:#94a3b8;
+}
+
+/* EMPTY */
+.empty {
+  text-align:center;
+  margin-top:20px;
+  color:#94a3b8;
 }
 </style>
 </head>
@@ -99,7 +116,7 @@ button {
 <body>
 
 <script>
-// 🔒 SECURITY
+// 🔒 SECURITY CHECK
 if (!localStorage.getItem("adminToken")) {
   window.location.href = "admin-login.html";
 }
@@ -114,9 +131,9 @@ if (!localStorage.getItem("adminToken")) {
 
 <!-- STATS -->
 <div class="stats">
-  <div class="card"><h3 id="totalUsers">0</h3>Total Users</div>
-  <div class="card"><h3 id="premiumUsers">0</h3>Premium</div>
-  <div class="card"><h3 id="freeUsers">0</h3>Free</div>
+  <div class="card"><h3 id="totalUsers">0</h3><p>Total Users</p></div>
+  <div class="card"><h3 id="premiumUsers">0</h3><p>Premium</p></div>
+  <div class="card"><h3 id="freeUsers">0</h3><p>Free</p></div>
 </div>
 
 <!-- SEARCH -->
@@ -127,7 +144,7 @@ if (!localStorage.getItem("adminToken")) {
 </div>
 
 <!-- LOADER -->
-<div class="loader" id="loader">Loading...</div>
+<div class="loader" id="loader">⏳ Loading users...</div>
 
 <!-- USERS -->
 <div id="userList"></div>
@@ -147,12 +164,13 @@ function showLoader(show){
 async function loadUsers() {
   showLoader(true);
 
-  let res = await fetch(API + "/admin/users", {
-    headers: { Authorization: TOKEN }
-  });
-
-  let data = await res.json();
-  renderUsers(data);
+  try {
+    let res = await fetch(API + "/admin/users");
+    let data = await res.json();
+    renderUsers(data);
+  } catch {
+    document.getElementById("userList").innerHTML = "Error loading users ❌";
+  }
 
   showLoader(false);
 }
@@ -161,30 +179,32 @@ async function loadUsers() {
 function renderUsers(users) {
   let html = "";
 
+  if (!users.length) {
+    document.getElementById("userList").innerHTML = `<div class="empty">No users found</div>`;
+    return;
+  }
+
   users.forEach(u => {
     html += `
       <div class="user-card">
         <b>${u.email}</b><br>
-        ${u.premium ? "💎 Premium" : "Free"}<br>
+        ${u.premium ? "💎 Premium" : "🆓 Free"}<br>
 
-        <button class="green" onclick="togglePremium('${u.email}')">Premium</button>
+        <button class="green" onclick="togglePremium('${u.email}')">Toggle Premium</button>
         <button class="red" onclick="deleteUser('${u.email}')">Delete</button>
-        <button class="orange" onclick="clearChat('${u.email}')">Clear</button>
+        <button class="orange" onclick="clearChat('${u.email}')">Clear Chat</button>
       </div>
     `;
   });
 
-  document.getElementById("userList").innerHTML = html || "No users found";
+  document.getElementById("userList").innerHTML = html;
 }
 
 // SEARCH
 async function searchUser() {
   let text = document.getElementById("searchInput").value.toLowerCase();
 
-  let res = await fetch(API + "/admin/users", {
-    headers: { Authorization: TOKEN }
-  });
-
+  let res = await fetch(API + "/admin/users");
   let data = await res.json();
 
   let filtered = data.filter(u =>
@@ -198,10 +218,7 @@ async function searchUser() {
 async function togglePremium(email) {
   await fetch(API + "/admin/toggle-premium", {
     method:"POST",
-    headers:{
-      "Content-Type":"application/json",
-      Authorization:TOKEN
-    },
+    headers:{ "Content-Type":"application/json" },
     body: JSON.stringify({email})
   });
 
@@ -213,10 +230,7 @@ async function deleteUser(email) {
 
   await fetch(API + "/admin/delete-user", {
     method:"POST",
-    headers:{
-      "Content-Type":"application/json",
-      Authorization:TOKEN
-    },
+    headers:{ "Content-Type":"application/json" },
     body: JSON.stringify({email})
   });
 
@@ -226,22 +240,16 @@ async function deleteUser(email) {
 async function clearChat(email) {
   await fetch(API + "/admin/clear-chat", {
     method:"POST",
-    headers:{
-      "Content-Type":"application/json",
-      Authorization:TOKEN
-    },
+    headers:{ "Content-Type":"application/json" },
     body: JSON.stringify({email})
   });
 
-  alert("Chat cleared");
+  alert("Chat cleared ✅");
 }
 
 // STATS
 async function loadStats() {
-  let res = await fetch(API + "/admin/stats", {
-    headers: { Authorization: TOKEN }
-  });
-
+  let res = await fetch(API + "/admin/stats");
   let data = await res.json();
 
   document.getElementById("totalUsers").innerText = data.totalUsers;
@@ -249,7 +257,7 @@ async function loadStats() {
   document.getElementById("freeUsers").innerText = data.freeUsers;
 }
 
-// AUTO REFRESH (🔥 PRO)
+// AUTO REFRESH
 setInterval(() => {
   loadUsers();
   loadStats();
