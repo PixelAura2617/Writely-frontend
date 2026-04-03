@@ -6,7 +6,7 @@ let freeLimit = parseInt(localStorage.getItem("freeLimit")) || 3;
 
 // 🔥 OGAds unlock check
 if (localStorage.getItem("unlocked") === "true") {
-    freeLimit = 999;
+  freeLimit = 999;
 }
 
 // ================= SAVE =================
@@ -116,7 +116,7 @@ function addMessage(text, sender) {
 
   chatBox.scrollTop = chatBox.scrollHeight;
 
-  return div;
+  return span;
 }
 
 // ================= SEND MESSAGE =================
@@ -126,29 +126,28 @@ async function sendMessage() {
 
   if (!text) return;
 
- if (freeLimit <= 0) {
+  // 🔥 LIMIT CHECK
+  if (freeLimit <= 0) {
     document.querySelector('[data-captcha-enable]').style.display = "block";
     return;
-}
+  }
 
-  // 👉 userId (memory ke liye)
+  // 🔥 USER ID
   if (!localStorage.getItem("userId")) {
     localStorage.setItem("userId", "user_" + Date.now());
   }
 
   if (!currentChatId) newChat();
 
-  // 👉 show user msg
   addMessage(text, "user");
 
   chats[currentChatId].messages.push({
-    text: text,
+    text,
     sender: "user"
   });
 
   input.value = "";
 
-  // 👉 typing
   let typing = addMessage("Thinking...", "bot");
 
   try {
@@ -159,54 +158,50 @@ async function sendMessage() {
       },
       body: JSON.stringify({
         prompt: text,
-        userId: localStorage.getItem("userId") // 🔥 IMPORTANT
+        userId: localStorage.getItem("userId")
       })
     });
 
-    let data;
+    let data = await res.json();
 
-    try {
-      data = await res.json();
-    } catch {
-      typing.innerText = "⚠️ Server response error";
-      return;
-    }
-
-    typing.remove();
+    typing.innerText = "";
 
     let reply =
       data.reply ||
       data.text ||
       data?.choices?.[0]?.message?.content ||
-      "Bhai no response 😅";
+      "No response 😅";
 
-    reply = reply.trim();
+    reply = reply.trim() || "Server waking up...";
 
-    if (!reply) {
-      reply = "⏳ Server waking up... try again";
-    }
-
-    // 👉 show bot msg
-   let msgEl = addMessage("","bot");typeText(msgEl, reply);
+    let msgEl = addMessage("", "bot");
+    typeText(msgEl, reply);
 
     chats[currentChatId].messages.push({
       text: reply,
       sender: "bot"
     });
 
-    // 👉 limit reduce
+    // 🔥 LIMIT REDUCE
     freeLimit--;
     updateLimitUI();
 
-    // 👉 save chats
+    // 🔥 AUTO AD ON LIMIT FINISH
+    if (freeLimit === 0) {
+      setTimeout(() => {
+        window.open("https://www.profitableratecpm.com/xyz", "_blank");
+      }, 1000);
+    }
+
     saveChats();
     renderSidebar();
 
   } catch (err) {
-    console.log("ERROR:", err);
-    typing.innerText = "⚠️ Network error... try again";
+    console.log(err);
+    typing.innerText = "⚠️ Network error";
   }
 }
+
 // ================= WATCH AD =================
 function watchAd() {
   let adOpened = window.open("https://www.profitableratecpm.com/xyz", "_blank");
@@ -215,12 +210,14 @@ function watchAd() {
     setTimeout(() => {
       freeLimit += 3;
       updateLimitUI();
-      alert("🎁 Free messages unlocked!");
+      saveChats();
+      alert("🎁 3 messages unlocked!");
     }, 5000);
   } else {
-    alert("⚠️ Please allow popups to watch ad");
+    alert("Popup allow karo bhai 😅");
   }
 }
+
 // ================= MENU =================
 function toggleMenu(e, id) {
   e.stopPropagation();
@@ -230,7 +227,6 @@ function toggleMenu(e, id) {
   });
 
   let menu = document.getElementById("menu-" + id);
-
   menu.style.display = "block";
 }
 
@@ -258,8 +254,7 @@ function startVoice() {
   recognition.start();
 
   recognition.onresult = function(event) {
-    const text = event.results[0][0].transcript;
-    document.getElementById("input").value = text;
+    document.getElementById("input").value = event.results[0][0].transcript;
   };
 
   recognition.onerror = function() {
@@ -272,11 +267,9 @@ window.onload = () => {
   renderSidebar();
   updateLimitUI();
 };
-function toggleMenu() {
-  document.querySelector(".sidebar").classList.toggle("active");
-}
-// 🔥 Typing effect
-function typeText(element, text, speed = 20) {
+
+// 🔥 Typing Effect
+function typeText(element, text, speed = 15) {
   let i = 0;
   element.innerHTML = "";
 
@@ -291,15 +284,12 @@ function typeText(element, text, speed = 20) {
   typing();
 }
 
-// 🔥 Auto scroll
-function scrollToBottom() {
-  window.scrollTo(0, document.body.scrollHeight);
-}
+// ================= OGAds UNLOCK =================
 function unlockSuccess() {
-    freeLimit = 3; // ya jitna dena hai
-    localStorage.setItem("freeLimit", freeLimit);
+  freeLimit = 5;
+  localStorage.setItem("freeLimit", freeLimit);
 
-    document.querySelector('[data-captcha-enable]').style.display = "none";
+  document.querySelector('[data-captcha-enable]').style.display = "none";
 
-    alert("Unlocked! Ab continue karo 🚀");
+  alert("Unlocked 🚀");
 }
