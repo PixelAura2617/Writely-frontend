@@ -256,6 +256,9 @@ window.onload = () => {
   renderSidebar();
   updateLimitUI();
 };
+function toggleSidebar() {
+  document.querySelector(".sidebar").classList.toggle("active");
+}
 
 // ================= TYPING EFFECT =================
 function typeText(element, text, speed = 15) {
