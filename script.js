@@ -4,11 +4,6 @@ let currentChatId = null;
 
 let freeLimit = parseInt(localStorage.getItem("freeLimit")) || 3;
 
-// 🔥 OGAds unlock check
-if (localStorage.getItem("unlocked") === "true") {
-  freeLimit = 999;
-}
-
 // ================= SAVE =================
 function saveChats() {
   localStorage.setItem("chats", JSON.stringify(chats));
@@ -126,13 +121,13 @@ async function sendMessage() {
 
   if (!text) return;
 
-  // 🔥 LIMIT CHECK
+  // 🔥 LIMIT CHECK (OGAds show)
   if (freeLimit <= 0) {
     document.querySelector('[data-captcha-enable]').style.display = "block";
     return;
   }
 
-  // 🔥 USER ID
+  // USER ID
   if (!localStorage.getItem("userId")) {
     localStorage.setItem("userId", "user_" + Date.now());
   }
@@ -186,13 +181,6 @@ async function sendMessage() {
     freeLimit--;
     updateLimitUI();
 
-    // 🔥 AUTO AD ON LIMIT FINISH
-    if (freeLimit === 0) {
-      setTimeout(() => {
-        window.open("https://www.profitableratecpm.com/xyz", "_blank");
-      }, 1000);
-    }
-
     saveChats();
     renderSidebar();
 
@@ -202,20 +190,21 @@ async function sendMessage() {
   }
 }
 
-// ================= WATCH AD =================
+// ================= WATCH AD (BUTTON) =================
 function watchAd() {
-  let adOpened = window.open("https://www.profitableratecpm.com/xyz", "_blank");
+  document.querySelector('[data-captcha-enable]').style.display = "block";
+}
+// ================= OGAds UNLOCK =================
+function og_converted() {
+  freeLimit += 5; // reward
 
-  if (adOpened) {
-    setTimeout(() => {
-      freeLimit += 3;
-      updateLimitUI();
-      saveChats();
-      alert("🎁 3 messages unlocked!");
-    }, 5000);
-  } else {
-    alert("Popup allow karo bhai 😅");
-  }
+  localStorage.setItem("freeLimit", freeLimit);
+
+  document.querySelector('[data-captcha-enable]').style.display = "none";
+
+  updateLimitUI();
+
+  alert("🚀 5 Messages Unlocked!");
 }
 
 // ================= MENU =================
@@ -268,7 +257,7 @@ window.onload = () => {
   updateLimitUI();
 };
 
-// 🔥 Typing Effect
+// ================= TYPING EFFECT =================
 function typeText(element, text, speed = 15) {
   let i = 0;
   element.innerHTML = "";
@@ -282,14 +271,4 @@ function typeText(element, text, speed = 15) {
   }
 
   typing();
-}
-
-// ================= OGAds UNLOCK =================
-function unlockSuccess() {
-  freeLimit = 5;
-  localStorage.setItem("freeLimit", freeLimit);
-
-  document.querySelector('[data-captcha-enable]').style.display = "none";
-
-  alert("Unlocked 🚀");
 }
