@@ -18,12 +18,6 @@ body {
   align-items: center;
   padding: 15px 25px;
   background: #1e293b;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.5);
-}
-
-.header h1 {
-  margin: 0;
-  font-size: 20px;
 }
 
 .header button {
@@ -36,16 +30,10 @@ body {
 }
 
 /* CONTAINER */
-.container {
-  padding: 20px;
-}
+.container { padding: 20px; }
 
 /* STATS */
-.stats {
-  display: flex;
-  gap: 15px;
-  margin-bottom: 20px;
-}
+.stats { display: flex; gap: 15px; margin-bottom: 20px; }
 
 .card {
   background: #1e293b;
@@ -53,33 +41,6 @@ body {
   border-radius: 10px;
   flex: 1;
   text-align: center;
-}
-
-.card h3 {
-  margin: 0;
-  font-size: 22px;
-}
-
-/* SEARCH */
-.search {
-  margin-bottom: 15px;
-}
-
-.search input {
-  padding: 10px;
-  width: 250px;
-  border-radius: 6px;
-  border: none;
-  outline: none;
-}
-
-.search button {
-  padding: 10px 15px;
-  border: none;
-  background: #3b82f6;
-  color: white;
-  border-radius: 6px;
-  cursor: pointer;
 }
 
 /* USER CARD */
@@ -99,30 +60,21 @@ body {
   cursor: pointer;
 }
 
-.btn-premium { background: #22c55e; color: white; }
-.btn-delete { background: #ef4444; color: white; }
-.btn-clear { background: #f59e0b; color: white; }
-
-/* PASSWORD */
-.pass-box input {
-  padding: 8px;
-  margin: 5px;
-  border-radius: 6px;
-  border: none;
-}
-.pass-box button {
-  padding: 8px 12px;
-  background: #3b82f6;
-  border: none;
-  border-radius: 6px;
-  color: white;
-}
+.btn-premium { background: #22c55e; }
+.btn-delete { background: #ef4444; }
+.btn-clear { background: #f59e0b; }
 </style>
 </head>
 
 <body>
 
-<!-- HEADER -->
+<script>
+// 🔒 ADMIN PROTECTION
+if (!localStorage.getItem("adminToken")) {
+  window.location.href = "admin-login.html";
+}
+</script>
+
 <div class="header">
   <h1>⚙️ Admin Panel</h1>
   <button onclick="logout()">Logout</button>
@@ -130,48 +82,26 @@ body {
 
 <div class="container">
 
-<!-- STATS -->
 <div class="stats">
-  <div class="card">
-    <h3 id="totalUsers">0</h3>
-    <p>Total Users</p>
-  </div>
-  <div class="card">
-    <h3 id="premiumUsers">0</h3>
-    <p>Premium</p>
-  </div>
-  <div class="card">
-    <h3 id="freeUsers">0</h3>
-    <p>Free</p>
-  </div>
+  <div class="card"><h3 id="totalUsers">0</h3><p>Total Users</p></div>
+  <div class="card"><h3 id="premiumUsers">0</h3><p>Premium</p></div>
+  <div class="card"><h3 id="freeUsers">0</h3><p>Free</p></div>
 </div>
 
-<!-- SEARCH -->
-<div class="search">
-  <input type="text" id="searchInput" placeholder="Search user...">
-  <button onclick="searchUser()">Search</button>
-</div>
-
-<!-- USER LIST -->
 <div id="userList"></div>
-
-<!-- CHANGE PASSWORD -->
-<div class="card pass-box">
-  <h3>Change Admin Password</h3>
-  <input id="oldPass" placeholder="Old Password">
-  <input id="newPass" placeholder="New Password">
-  <br>
-  <button onclick="changePass()">Update</button>
-</div>
 
 </div>
 
 <script>
-const API = "http://localhost:3000";
+const API = "https://writely-backend-x2y0.onrender.com";
+const TOKEN = localStorage.getItem("adminToken");
 
 // LOAD USERS
 async function loadUsers() {
-  let res = await fetch(API + "/admin/users");
+  let res = await fetch(API + "/admin/users", {
+    headers: { "Authorization": TOKEN }
+  });
+
   let data = await res.json();
   showUsers(data);
 }
@@ -195,25 +125,14 @@ function showUsers(data) {
   });
 }
 
-// SEARCH
-async function searchUser() {
-  let text = document.getElementById("searchInput").value.toLowerCase();
-
-  let res = await fetch(API + "/admin/users");
-  let data = await res.json();
-
-  let filtered = data.filter(u =>
-    u.email.toLowerCase().includes(text)
-  );
-
-  showUsers(filtered);
-}
-
 // ACTIONS
 async function togglePremium(email) {
   await fetch(API + "/admin/toggle-premium", {
     method: "POST",
-    headers: {"Content-Type":"application/json"},
+    headers: {
+      "Content-Type":"application/json",
+      "Authorization": TOKEN
+    },
     body: JSON.stringify({ email })
   });
 
@@ -225,7 +144,10 @@ async function deleteUser(email) {
 
   await fetch(API + "/admin/delete-user", {
     method: "POST",
-    headers: {"Content-Type":"application/json"},
+    headers: {
+      "Content-Type":"application/json",
+      "Authorization": TOKEN
+    },
     body: JSON.stringify({ email })
   });
 
@@ -235,7 +157,10 @@ async function deleteUser(email) {
 async function clearChat(email) {
   await fetch(API + "/admin/clear-chat", {
     method: "POST",
-    headers: {"Content-Type":"application/json"},
+    headers: {
+      "Content-Type":"application/json",
+      "Authorization": TOKEN
+    },
     body: JSON.stringify({ email })
   });
 
@@ -244,7 +169,10 @@ async function clearChat(email) {
 
 // STATS
 async function loadStats() {
-  let res = await fetch(API + "/admin/stats");
+  let res = await fetch(API + "/admin/stats", {
+    headers: { "Authorization": TOKEN }
+  });
+
   let data = await res.json();
 
   document.getElementById("totalUsers").innerText = data.totalUsers;
@@ -252,24 +180,9 @@ async function loadStats() {
   document.getElementById("freeUsers").innerText = data.freeUsers;
 }
 
-// CHANGE PASSWORD
-async function changePass() {
-  let oldPass = document.getElementById("oldPass").value;
-  let newPass = document.getElementById("newPass").value;
-
-  let res = await fetch(API + "/admin/change-password", {
-    method: "POST",
-    headers: {"Content-Type":"application/json"},
-    body: JSON.stringify({ oldPass, newPass })
-  });
-
-  let data = await res.json();
-  alert(data.msg);
-}
-
 // LOGOUT
 function logout() {
-  localStorage.removeItem("adminLoggedIn");
+  localStorage.removeItem("adminToken");
   window.location.href = "admin-login.html";
 }
 
