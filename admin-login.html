@@ -98,16 +98,18 @@ async function adminLogin(e) {
 
     let data = await res.json();
 
-    if (data.success) {
-      // 🔥 TOKEN SAVE (IMPORTANT)
-      localStorage.setItem("adminToken", data.token);
+    // ✅ FIXED CONDITION
+    if (data.msg === "Admin login success") {
+
+      // token set
+      localStorage.setItem("adminToken", "true");
 
       msg.style.color = "#22c55e";
       msg.innerText = "Login successful 🚀";
 
       setTimeout(() => {
         window.location.href = "admin-dashboard.html";
-      }, 1000);
+      }, 800);
 
     } else {
       msg.innerText = data.msg || "Invalid login ❌";
