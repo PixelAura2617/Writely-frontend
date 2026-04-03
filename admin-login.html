@@ -1,103 +1,194 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Admin Login - Writely AI</title>
+<title>Admin Panel - Writely AI</title>
 
 <style>
 body {
   margin: 0;
   font-family: Arial;
   background: #0f172a;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-}
-
-.box {
-  background: #1e293b;
-  padding: 30px;
-  border-radius: 12px;
-  width: 300px;
-  text-align: center;
   color: white;
-  box-shadow: 0 0 20px rgba(0,0,0,0.5);
 }
 
-h2 {
-  margin-bottom: 20px;
+/* HEADER */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 25px;
+  background: #1e293b;
 }
 
-input {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 12px;
+.header button {
+  background: #ef4444;
   border: none;
-  border-radius: 8px;
-  outline: none;
-}
-
-button {
-  width: 100%;
-  padding: 10px;
-  border: none;
-  border-radius: 8px;
-  background: linear-gradient(45deg, #06b6d4, #3b82f6);
+  padding: 8px 14px;
+  border-radius: 6px;
   color: white;
   cursor: pointer;
 }
 
-.msg {
-  margin-top: 10px;
-  font-size: 14px;
+/* CONTAINER */
+.container { padding: 20px; }
+
+/* STATS */
+.stats { display: flex; gap: 15px; margin-bottom: 20px; }
+
+.card {
+  background: #1e293b;
+  padding: 15px;
+  border-radius: 10px;
+  flex: 1;
+  text-align: center;
 }
+
+/* USER CARD */
+.user-card {
+  background: #1e293b;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+
+.user-card button {
+  margin-right: 10px;
+  margin-top: 8px;
+  padding: 6px 10px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.btn-premium { background: #22c55e; }
+.btn-delete { background: #ef4444; }
+.btn-clear { background: #f59e0b; }
 </style>
 </head>
 
 <body>
 
-<div class="box">
-  <h2>🔐 Admin Login</h2>
+<script>
+// 🔒 ADMIN PROTECTION
+if (!localStorage.getItem("adminToken")) {
+  window.location.href = "admin-login.html";
+}
+</script>
 
-  <form onsubmit="adminLogin(event)">
-    <input type="text" id="email" placeholder="Admin Email" required>
-    <input type="password" id="password" placeholder="Password" required>
+<div class="header">
+  <h1>⚙️ Admin Panel</h1>
+  <button onclick="logout()">Logout</button>
+</div>
 
-    <button type="submit">Login</button>
-  </form>
+<div class="container">
 
-  <div class="msg" id="msg"></div>
+<div class="stats">
+  <div class="card"><h3 id="totalUsers">0</h3><p>Total Users</p></div>
+  <div class="card"><h3 id="premiumUsers">0</h3><p>Premium</p></div>
+  <div class="card"><h3 id="freeUsers">0</h3><p>Free</p></div>
+</div>
+
+<div id="userList"></div>
+
 </div>
 
 <script>
-async function adminLogin(e) {
-  e.preventDefault();
+const API = "https://writely-backend-x2y0.onrender.com";
+const TOKEN = localStorage.getItem("adminToken");
 
-  let email = document.getElementById("email").value.trim();
-  let password = document.getElementById("password").value.trim();
+// LOAD USERS
+async function loadUsers() {
+  let res = await fetch(API + "/admin/users", {
+    headers: { "Authorization": TOKEN }
+  });
 
-  try {
-    let res = await fetch("http://localhost:3000/admin/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ email, password })
-    });
-
-    let data = await res.json();
-
-    if (data.msg === "Admin login success") {
-      localStorage.setItem("adminLoggedIn", "true");
-      window.location.href = "admin.html";
-    } else {
-      document.getElementById("msg").innerText = data.msg;
-    }
-
-  } catch (err) {
-    document.getElementById("msg").innerText = "Server error ❌";
-  }
+  let data = await res.json();
+  showUsers(data);
 }
+
+// SHOW USERS
+function showUsers(data) {
+  let list = document.getElementById("userList");
+  list.innerHTML = "";
+
+  data.forEach(u => {
+    list.innerHTML += `
+      <div class="user-card">
+        <b>${u.email}</b><br>
+        ${u.premium ? "💎 Premium" : "Free"}<br>
+
+        <button class="btn-premium" onclick="togglePremium('${u.email}')">Toggle</button>
+        <button class="btn-delete" onclick="deleteUser('${u.email}')">Delete</button>
+        <button class="btn-clear" onclick="clearChat('${u.email}')">Clear Chat</button>
+      </div>
+    `;
+  });
+}
+
+// ACTIONS
+async function togglePremium(email) {
+  await fetch(API + "/admin/toggle-premium", {
+    method: "POST",
+    headers: {
+      "Content-Type":"application/json",
+      "Authorization": TOKEN
+    },
+    body: JSON.stringify({ email })
+  });
+
+  loadUsers();
+}
+
+async function deleteUser(email) {
+  if (!confirm("Delete user?")) return;
+
+  await fetch(API + "/admin/delete-user", {
+    method: "POST",
+    headers: {
+      "Content-Type":"application/json",
+      "Authorization": TOKEN
+    },
+    body: JSON.stringify({ email })
+  });
+
+  loadUsers();
+}
+
+async function clearChat(email) {
+  await fetch(API + "/admin/clear-chat", {
+    method: "POST",
+    headers: {
+      "Content-Type":"application/json",
+      "Authorization": TOKEN
+    },
+    body: JSON.stringify({ email })
+  });
+
+  alert("Chat cleared");
+}
+
+// STATS
+async function loadStats() {
+  let res = await fetch(API + "/admin/stats", {
+    headers: { "Authorization": TOKEN }
+  });
+
+  let data = await res.json();
+
+  document.getElementById("totalUsers").innerText = data.totalUsers;
+  document.getElementById("premiumUsers").innerText = data.premiumUsers;
+  document.getElementById("freeUsers").innerText = data.freeUsers;
+}
+
+// LOGOUT
+function logout() {
+  localStorage.removeItem("adminToken");
+  window.location.href = "admin-login.html";
+}
+
+// INIT
+loadUsers();
+loadStats();
 </script>
 
 </body>
