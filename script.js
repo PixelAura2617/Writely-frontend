@@ -225,16 +225,6 @@ document.body.addEventListener("click", () => {
   });
 });
 
-// ================= PROFILE =================
-function openProfile() {
-  window.location.href = "profile.html";
-}
-
-function logout() {
-  localStorage.removeItem("loggedIn");
-  window.location.href = "login.html";
-}
-
 // ================= VOICE =================
 function startVoice() {
   const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
