@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Admin Dashboard - Writely AI</title>
+
+<style>
+body {
+  margin:0;
+  font-family:Arial;
+  background:#0f172a;
+  color:white;
+}
+
+/* HEADER */
+.header {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:15px 20px;
+  background:#1e293b;
+}
+
+.header button {
+  background:#ef4444;
+  border:none;
+  padding:8px 14px;
+  border-radius:6px;
+  color:white;
+  cursor:pointer;
+}
+
+/* CONTAINER */
+.container { padding:20px; }
+
+/* STATS */
+.stats {
+  display:flex;
+  gap:15px;
+  margin-bottom:20px;
+}
+
+.card {
+  background:#1e293b;
+  padding:15px;
+  border-radius:10px;
+  flex:1;
+  text-align:center;
+}
+
+/* SEARCH */
+.search {
+  margin-bottom:15px;
+}
+
+.search input {
+  padding:10px;
+  border-radius:6px;
+  border:none;
+  width:250px;
+}
+
+.search button {
+  padding:10px;
+  border:none;
+  border-radius:6px;
+  background:#3b82f6;
+  color:white;
+}
+
+/* USER CARD */
+.user-card {
+  background:#1e293b;
+  padding:15px;
+  border-radius:10px;
+  margin-bottom:10px;
+}
+
+button {
+  margin:5px;
+  padding:6px 10px;
+  border:none;
+  border-radius:6px;
+  cursor:pointer;
+}
+
+.green { background:#22c55e; }
+.red { background:#ef4444; }
+.orange { background:#f59e0b; }
+
+/* LOADER */
+.loader {
+  text-align:center;
+  margin-top:20px;
+  display:none;
+}
+</style>
+</head>
+
+<body>
+
+<script>
+// 🔒 SECURITY
+if (!localStorage.getItem("adminToken")) {
+  window.location.href = "admin-login.html";
+}
+</script>
+
+<div class="header">
+  <h2>⚙️ Admin Dashboard</h2>
+  <button onclick="logout()">Logout</button>
+</div>
+
+<div class="container">
+
+<!-- STATS -->
+<div class="stats">
+  <div class="card"><h3 id="totalUsers">0</h3>Total Users</div>
+  <div class="card"><h3 id="premiumUsers">0</h3>Premium</div>
+  <div class="card"><h3 id="freeUsers">0</h3>Free</div>
+</div>
+
+<!-- SEARCH -->
+<div class="search">
+  <input id="searchInput" placeholder="Search user...">
+  <button onclick="searchUser()">Search</button>
+  <button onclick="loadUsers()">Refresh</button>
+</div>
+
+<!-- LOADER -->
+<div class="loader" id="loader">Loading...</div>
+
+<!-- USERS -->
+<div id="userList"></div>
+
+</div>
+
+<script>
+const API = "https://writely-backend-x2y0.onrender.com";
+const TOKEN = localStorage.getItem("adminToken");
+
+// LOADER
+function showLoader(show){
+  document.getElementById("loader").style.display = show ? "block" : "none";
+}
+
+// LOAD USERS
+async function loadUsers() {
+  showLoader(true);
+
+  let res = await fetch(API + "/admin/users", {
+    headers: { Authorization: TOKEN }
+  });
+
+  let data = await res.json();
+  renderUsers(data);
+
+  showLoader(false);
+}
+
+// RENDER USERS
+function renderUsers(users) {
+  let html = "";
+
+  users.forEach(u => {
+    html += `
+      <div class="user-card">
+        <b>${u.email}</b><br>
+        ${u.premium ? "💎 Premium" : "Free"}<br>
+
+        <button class="green" onclick="togglePremium('${u.email}')">Premium</button>
+        <button class="red" onclick="deleteUser('${u.email}')">Delete</button>
+        <button class="orange" onclick="clearChat('${u.email}')">Clear</button>
+      </div>
+    `;
+  });
+
+  document.getElementById("userList").innerHTML = html || "No users found";
+}
+
+// SEARCH
+async function searchUser() {
+  let text = document.getElementById("searchInput").value.toLowerCase();
+
+  let res = await fetch(API + "/admin/users", {
+    headers: { Authorization: TOKEN }
+  });
+
+  let data = await res.json();
+
+  let filtered = data.filter(u =>
+    u.email.toLowerCase().includes(text)
+  );
+
+  renderUsers(filtered);
+}
+
+// ACTIONS
+async function togglePremium(email) {
+  await fetch(API + "/admin/toggle-premium", {
+    method:"POST",
+    headers:{
+      "Content-Type":"application/json",
+      Authorization:TOKEN
+    },
+    body: JSON.stringify({email})
+  });
+
+  loadUsers();
+}
+
+async function deleteUser(email) {
+  if (!confirm("Delete user?")) return;
+
+  await fetch(API + "/admin/delete-user", {
+    method:"POST",
+    headers:{
+      "Content-Type":"application/json",
+      Authorization:TOKEN
+    },
+    body: JSON.stringify({email})
+  });
+
+  loadUsers();
+}
+
+async function clearChat(email) {
+  await fetch(API + "/admin/clear-chat", {
+    method:"POST",
+    headers:{
+      "Content-Type":"application/json",
+      Authorization:TOKEN
+    },
+    body: JSON.stringify({email})
+  });
+
+  alert("Chat cleared");
+}
+
+// STATS
+async function loadStats() {
+  let res = await fetch(API + "/admin/stats", {
+    headers: { Authorization: TOKEN }
+  });
+
+  let data = await res.json();
+
+  document.getElementById("totalUsers").innerText = data.totalUsers;
+  document.getElementById("premiumUsers").innerText = data.premiumUsers;
+  document.getElementById("freeUsers").innerText = data.freeUsers;
+}
+
+// AUTO REFRESH (🔥 PRO)
+setInterval(() => {
+  loadUsers();
+  loadStats();
+}, 10000);
+
+// LOGOUT
+function logout() {
+  localStorage.removeItem("adminToken");
+  window.location.href = "admin-login.html";
+}
+
+// INIT
+loadUsers();
+loadStats();
+</script>
+
+</body>
+</html>
