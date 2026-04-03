@@ -4,16 +4,27 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Writely AI</title>
-
   <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<!-- LOGIN CHECK -->
+<!-- 🔐 LOGIN CHECK -->
 <script>
 if (localStorage.getItem("loggedIn") !== "true") {
   window.location.href = "login.html";
+}
+</script>
+
+<!-- 🔥 LOGIN AD (1 baar open hoga) -->
+<!-- LOGIN AD (1 baar open hoga) -->
+<script>
+if (!sessionStorage.getItem("loginAdShown")) {
+  sessionStorage.setItem("loginAdShown", "true");
+
+  var s = document.createElement("script");
+  s.src = "https://pl29048065.profitablecpmratenetwork.com/65/c3/c0/65c3c042046896707c773cdce71b17fc.js";
+  document.body.appendChild(s);
 }
 </script>
 
@@ -22,9 +33,7 @@ if (localStorage.getItem("loggedIn") !== "true") {
   <!-- SIDEBAR -->
   <div class="sidebar">
     <button onclick="newChat()">➕ New Chat</button>
-
     <div id="chatList"></div>
-
     <button onclick="openProfile()">👤 Profile</button>
     <button onclick="logout()">🚪 Logout</button>
   </div>
@@ -32,10 +41,10 @@ if (localStorage.getItem("loggedIn") !== "true") {
   <!-- MAIN -->
   <div class="main">
 
-   <div class="header">
-  <button class="menu-btn" onclick="toggleMenu()">☰</button>
-  <h2>🤖 Writely AI</h2>
-</div>
+    <div class="header">
+      <button class="menu-btn" onclick="toggleMenu()">☰</button>
+      <h2>🤖 Writely AI</h2>
+    </div>
 
     <!-- HOME -->
     <div id="homeScreen" class="home">
@@ -56,19 +65,46 @@ if (localStorage.getItem("loggedIn") !== "true") {
       </div>
     </div>
 
-    <!-- CHAT -->
+    <!-- 🔐 OGAds LOCK -->
     <div data-captcha-enable="true" style="display:none;"></div>
-<script async="async" data-cfasync="false" src="https://pl29036769.profitablecpmratenetwork.com/38d9bf4255a8918f23d7acfc7c85e0e0/invoke.js"></script>
-<div id="container-38d9bf4255a8918f23d7acfc7c85e0e0"></div>
 
+    <!-- 💬 CHAT -->
     <div id="chatBox" class="chat-box"></div>
+
+    <!-- 🔥 300x250 AD -->
+    <div style="text-align:center; margin:15px 0;">
+      <script>
+        atOptions = {
+          'key' : 'b83a304f92a349ef2c2634ebcf9ef518',
+          'format' : 'iframe',
+          'height' : 250,
+          'width' : 300,
+          'params' : {}
+        };
+      </script>
+      <script src="https://www.highperformanceformat.com/b83a304f92a349ef2c2634ebcf9ef518/invoke.js"></script>
+    </div>
+
+    <!-- 🔥 320x50 AD -->
+    <div style="text-align:center; margin:10px 0;">
+      <script>
+        atOptions = {
+          'key' : '88628bb9a87dd44bc240d84d9dde28b2',
+          'format' : 'iframe',
+          'height' : 50,
+          'width' : 320,
+          'params' : {}
+        };
+      </script>
+      <script src="https://www.highperformanceformat.com/88628bb9a87dd44bc240d84d9dde28b2/invoke.js"></script>
+    </div>
 
     <!-- INPUT -->
     <div class="input-area">
       <textarea id="input" placeholder="Ask anything..."></textarea>
 
       <button onclick="sendMessage()">Send</button>
-      <button onclick="startVoice()">voice</button>
+      <button onclick="startVoice()">Voice</button>
       <button onclick="watchAd()">🎁 Free</button>
     </div>
 
@@ -76,22 +112,11 @@ if (localStorage.getItem("loggedIn") !== "true") {
 
 </div>
 
-<!-- SCRIPT (IMPORTANT LAST) -->
-<!-- OGAds -->
+<!-- 🔥 OGAds SCRIPT -->
 <script defer src="https://appchecker.space/cp/js/4wpq7"></script>
 
-<!-- Tera JS (MOST IMPORTANT LAST) -->
+<!-- MAIN JS -->
 <script src="script.js"></script>
-
-<script src="https://pl29036770.profitablecpmratenetwork.com/66/ce/c0/66cec097724d6b0848f305aa5302a682.js"></script>
-
-<script>
-if (sessionStorage.getItem("adShown")) {
-  // ad skip
-} else {
-  sessionStorage.setItem("adShown", "yes");
-}
-</script>
 
 </body>
 </html>
