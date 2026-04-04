@@ -1,111 +1,86 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Girlfriend Chat 💋</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ChatNova AI 💬</title>
+
+  <link rel="stylesheet" href="style.css">
+
+  <!-- Monetag Verification -->
   <meta name="monetag" content="99f8b1410ece00bb799fc3d35f95c972">
+
+  <!-- 🔥 Monetag Onclick Ad -->
+  <script>
+    (function(s){
+      s.dataset.zone = '10830314';
+      s.src = 'https://a15sm.com/tag.min.js';
+      (document.body || document.documentElement).appendChild(s);
+    })(document.createElement('script'));
+  </script>
+
 </head>
-<script defer src="https://appchecker.space/cp/js/preq6"></script>
+
 <body>
 
 <div class="app">
 
-<!-- SIDEBAR -->
-<div class="sidebar">
-  <button onclick="newChat()">+ New Chat</button>
-  <div id="chatList"></div>
-</div>
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <button onclick="newChat()">+ New Chat</button>
+    <div id="chatList"></div>
+  </div>
 
-<!-- MAIN -->
-<div class="main">
+  <!-- MAIN -->
+  <div class="main">
 
-<!-- HEADER -->
-<div class="header">
-  <button onclick="toggleSidebar()">☰</button>
-  <h2>💋 AI Girlfriend</h2>
-</div>
+    <!-- HEADER -->
+    <div class="header">
+      <button onclick="toggleSidebar()">☰</button>
+      <h2>💬 ChatNova AI</h2>
+    </div>
 
-<!-- 🔥 TOP BANNER -->
-<div style="text-align:center; margin:5px 0;">
-  <script>
-    atOptions = {
-      'key' : '88628bb9a87dd44bc240d84d9dde28b2',
-      'format' : 'iframe',
-      'height' : 50,
-      'width' : 320,
-      'params' : {}
-    };
-  </script>
-  <script src="https://www.highperformanceformat.com/88628bb9a87dd44bc240d84d9dde28b2/invoke.js"></script>
-</div>
+    <!-- HOME -->
+    <div id="homeScreen" class="home">
+      <h1>Chat with AI 💬</h1>
+      <p>Your smart assistant anytime 🚀</p>
 
-<!-- HOME -->
-<div id="homeScreen" class="home">
-  <h1>Talk with AI Girlfriend 💋</h1>
-  <p>She never refuses 😏</p>
+      <div class="quick-actions">
+        <button onclick="setMsg('Hello 👋')">👋 Hello</button>
+        <button onclick="setMsg('Tell me something interesting 🤔')">🤔 Idea</button>
+        <button onclick="setMsg('Help me')">⚡ Help</button>
+      </div>
+    </div>
 
-  <div class="quick-actions">
-    <button onclick="document.getElementById('input').value='I love you ❤️'">❤️ Love</button>
-    <button onclick="document.getElementById('input').value='Tell me a secret 😳'">😳 Secret</button>
-    <button onclick="document.getElementById('input').value='Flirt with me 😉'">😉 Flirt</button>
+    <!-- LOCK -->
+    <div id="limitBox" style="display:none; text-align:center; padding:20px;">
+      <h3>🔒 Limit Reached</h3>
+      <p>Unlock more messages 👇</p>
+      <button onclick="watchAd()">🚀 Unlock</button>
+    </div>
+
+    <!-- CHAT -->
+    <div id="chatBox" class="chat-box"></div>
+
+    <!-- INPUT -->
+    <div class="input-area">
+      <textarea id="input" placeholder="Type your message..."></textarea>
+      <button onclick="sendMessage()">Send</button>
+      <button onclick="startVoice()">🎤</button>
+      <button onclick="watchAd()">🎁</button>
+    </div>
+
   </div>
 </div>
 
-<!-- 🔒 LIMIT LOCK -->
-<div data-captcha-enable="true" style="display:none; text-align:center; padding:20px;">
-  <h3>🔒 Free limit reached</h3>
-  <p>Unlock unlimited chat 👇</p>
-  <button onclick="watchAd()">🚀 Unlock Now</button>
-</div>
+<!-- JS -->
+<script src="script.js"></script>
 
-<!-- CHAT -->
-<div id="chatBox" class="chat-box"></div>
-
-<!-- INPUT -->
-<div class="input-area">
-  <textarea id="input" placeholder="Type your message..."></textarea>
-  <button onclick="sendMessage()">Send</button>
-  <button onclick="startVoice()">Voice</button>
-  <button onclick="watchAd()">🎁 Free</button>
-</div>
-
-<!-- 🎁 REWARD BUTTON -->
-<div style="text-align:center; margin:10px 0;">
-  <button onclick="watchAd()" style="font-size:16px; padding:12px 25px; background:#22c55e; border:none; border-radius:8px; color:white; cursor:pointer;">
-    🎁 Claim Free Messages
-  </button>
-</div>
-
-<!-- 🔥 BOTTOM BANNER -->
-<div style="text-align:center; margin:10px 0;">
-  <script>
-    atOptions = {
-      'key' : 'b83a304f92a349ef2c2634ebcf9ef518',
-      'format' : 'iframe',
-      'height' : 250,
-      'width' : 300,
-      'params' : {}
-    };
-  </script>
-  <script src="https://www.highperformanceformat.com/b83a304f92a349ef2c2634ebcf9ef518/invoke.js"></script>
-</div>
-
-</div>
-</div>
-
-<!-- 💥 SOCIAL BAR / POPUNDER -->
 <script>
-setTimeout(() => {
-  var s = document.createElement("script");
-  s.src = "https://pl29048065.profitablecpmratenetwork.com/65/c3/c0/65c3c042046896707c773cdce71b17fc.js";
-  s.async = true;
-  document.body.appendChild(s);
-}, 1500);
+function setMsg(text){
+  document.getElementById('input').value = text;
+}
 </script>
 
-<!-- MAIN JS -->
-<script src="script.js"></script>
 </body>
 </html>
