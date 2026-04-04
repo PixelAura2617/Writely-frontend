@@ -2,8 +2,20 @@
 let chats = JSON.parse(localStorage.getItem("chats")) || {};
 let currentChatId = null;
 
-let freeLimit = parseInt(localStorage.getItem("freeLimit")) || 3;
+let freeLimit = parseInt(localStorage.getItem("freeLimit")) || 2; // 🔥 2 messages best
 let firstMessage = localStorage.getItem("firstMessageDone") !== "true";
+
+let messageCount = 0;
+let adShown = false;
+
+// ================= DAILY RESET =================
+let today = new Date().toDateString();
+let lastVisit = localStorage.getItem("lastVisit");
+
+if (lastVisit !== today) {
+  freeLimit = 2;
+  localStorage.setItem("lastVisit", today);
+}
 
 // ================= SAVE =================
 function saveChats() {
@@ -94,7 +106,6 @@ function addMessage(text, sender) {
   chatBox.appendChild(div);
 
   chatBox.scrollTop = chatBox.scrollHeight;
-
   return span;
 }
 
@@ -109,13 +120,12 @@ async function sendMessage() {
   if (firstMessage) {
     firstMessage = false;
     localStorage.setItem("firstMessageDone", "true");
-    freeLimit += 2;
-    alert("🎁 Bonus unlocked!");
+    freeLimit += 1;
   }
 
   // 🔒 LIMIT
   if (freeLimit <= 0) {
-    alert("Limit reached! Click Free button");
+    document.getElementById("limitBox").style.display = "block";
     return;
   }
 
@@ -134,6 +144,7 @@ async function sendMessage() {
   });
 
   input.value = "";
+  messageCount++;
 
   let typing = addMessage("Typing...", "bot");
 
@@ -150,7 +161,6 @@ async function sendMessage() {
     });
 
     let data = await res.json();
-
     typing.innerText = "";
 
     let reply =
@@ -170,33 +180,35 @@ async function sendMessage() {
     // 🔥 LIMIT REDUCE
     freeLimit--;
     updateLimitUI();
-
     saveChats();
     renderSidebar();
 
+    // 💰 AD TRIGGER (2nd message)
+    if (messageCount === 2 && !adShown) {
+      adShown = true;
+      setTimeout(() => {
+        document.body.click();
+      }, 1200);
+    }
+
   } catch (err) {
-    console.log(err);
     typing.innerText = "⚠️ Network error";
   }
 }
 
-// ================= 🔥 UNLOCK SYSTEM =================
+// ================= 🔥 UNLOCK =================
 function watchAd() {
+  let joined = localStorage.getItem("joinedTelegram");
 
-  let joinedTelegram = localStorage.getItem("joinedTelegram");
-
-  // 🥇 FIRST TIME → TELEGRAM
-  if (!joinedTelegram) {
+  // FIRST TIME → TELEGRAM
+  if (!joined) {
     localStorage.setItem("joinedTelegram", "true");
-
-    // ✅ FIXED LINK
     window.open("https://t.me/prediction999YRGame", "_blank");
-
     return;
   }
 
-  // 🥈 SECOND → AD ONLY ON BUTTON CLICK
-  triggerAdOnce();
+  // NEXT → AD
+  document.body.click();
 
   setTimeout(() => {
     freeLimit += 3;
@@ -206,35 +218,14 @@ function watchAd() {
   }, 3000);
 }
 
-// ================= AD CONTROL =================
-let adCooldown = false;
-
-function triggerAdOnce() {
-  if (adCooldown) return;
-
-  adCooldown = true;
-
-  document.body.click();
-
-  // 20 sec cooldown (spam fix)
-  setTimeout(() => {
-    adCooldown = false;
-  }, 20000);
-}
-
 // ================= VOICE =================
 function startVoice() {
   const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-
   recognition.lang = "en-IN";
   recognition.start();
 
   recognition.onresult = function(event) {
     document.getElementById("input").value = event.results[0][0].transcript;
-  };
-
-  recognition.onerror = function() {
-    alert("Voice error");
   };
 }
 
