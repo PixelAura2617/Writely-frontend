@@ -1,4 +1,3 @@
-let joinedTelegram = localStorage.getItem("joinedTelegram") === "true";
 // ================= INIT =================
 let chats = JSON.parse(localStorage.getItem("chats")) || {};
 let currentChatId = null;
@@ -184,48 +183,27 @@ async function sendMessage() {
 // ================= 🔥 UNLOCK (MONETAG STYLE) =================
 function watchAd() {
 
-  // 🔥 FIRST TIME → TELEGRAM
-  if (!joinedTelegram) {
-    window.open("https://t.me/YOUR_CHANNEL_LINK", "_blank");
-
-    joinedTelegram = true;
-    localStorage.setItem("joinedTelegram", "true");
-
-    freeLimit += 5;
-    saveChats();
-    updateLimitUI();
-
-    alert("🎉 Joined! 5 messages unlocked");
-    return;
-  }
-
-  // 🔥 AFTER → MONETAG
-  document.body.click(); // ad trigger
-
-  setTimeout(() => {
-    freeLimit += 3;
-    saveChats();
-    updateLimitUI();
-  }, 3000);
-}function watchAd() {
+  let joinedTelegram = localStorage.getItem("joinedTelegram");
 
   // 🔥 FIRST TIME → TELEGRAM
   if (!joinedTelegram) {
-    window.open("https://t.me/prediction999YRGame", "_blank");
 
-    joinedTelegram = true;
+    // direct redirect (BEST method)
+    window.location.href = "prediction999YRGame";
+
     localStorage.setItem("joinedTelegram", "true");
 
-    freeLimit += 5;
-    saveChats();
-    updateLimitUI();
+    setTimeout(() => {
+      freeLimit += 5;
+      saveChats();
+      updateLimitUI();
+    }, 2000);
 
-    alert("🎉 Joined! 5 messages unlocked");
     return;
   }
 
-  // 🔥 AFTER → MONETAG
-  document.body.click(); // ad trigger
+  // 🔥 NEXT → AD
+  document.body.click();
 
   setTimeout(() => {
     freeLimit += 3;
