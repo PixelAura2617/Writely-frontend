@@ -198,9 +198,18 @@ async function sendMessage() {
 // ================= WATCH AD =================
 function watchAd() {
   if (typeof _ogads !== "undefined") {
-    _ogads.unlock(); // 🔥 REAL CPA OPEN
+    _ogads.unlock();
   } else {
-    alert("Ad not loaded yet, try again...");
+    alert("Loading ad... try again in 3 sec");
+    
+    // 🔥 auto retry
+    setTimeout(() => {
+      if (typeof _ogads !== "undefined") {
+        _ogads.unlock();
+      } else {
+        alert("Ad failed to load 😢");
+      }
+    }, 3000);
   }
 }
 
