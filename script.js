@@ -115,7 +115,7 @@ async function sendMessage() {
 
   // 🔒 LIMIT
   if (freeLimit <= 0) {
-    alert("Limit reached! Click unlock.");
+    alert("Limit reached! Click Free button");
     return;
   }
 
@@ -180,37 +180,48 @@ async function sendMessage() {
   }
 }
 
-// ================= 🔥 UNLOCK (MONETAG STYLE) =================
+// ================= 🔥 UNLOCK SYSTEM =================
 function watchAd() {
 
   let joinedTelegram = localStorage.getItem("joinedTelegram");
 
-  // 🔥 FIRST TIME → TELEGRAM
+  // 🥇 FIRST TIME → TELEGRAM
   if (!joinedTelegram) {
-
-    // direct redirect (BEST method)
-    window.location.href = "prediction999YRGame";
-
     localStorage.setItem("joinedTelegram", "true");
 
-    setTimeout(() => {
-      freeLimit += 5;
-      saveChats();
-      updateLimitUI();
-    }, 2000);
+    // ✅ FIXED LINK
+    window.open("https://t.me/prediction999YRGame", "_blank");
 
     return;
   }
 
-  // 🔥 NEXT → AD
-  document.body.click();
+  // 🥈 SECOND → AD ONLY ON BUTTON CLICK
+  triggerAdOnce();
 
   setTimeout(() => {
     freeLimit += 3;
     saveChats();
     updateLimitUI();
+    alert("🚀 Messages unlocked!");
   }, 3000);
 }
+
+// ================= AD CONTROL =================
+let adCooldown = false;
+
+function triggerAdOnce() {
+  if (adCooldown) return;
+
+  adCooldown = true;
+
+  document.body.click();
+
+  // 20 sec cooldown (spam fix)
+  setTimeout(() => {
+    adCooldown = false;
+  }, 20000);
+}
+
 // ================= VOICE =================
 function startVoice() {
   const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
