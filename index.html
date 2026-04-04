@@ -10,9 +10,6 @@
   <!-- Monetag Verification -->
   <meta name="monetag" content="99f8b1410ece00bb799fc3d35f95c972">
 
-  <!-- 🔥 Monetag Onclick Ad -->
-<script>(function(s){s.dataset.zone='10830314',s.src='https://al5sm.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
-
 </head>
 
 <body>
@@ -28,10 +25,15 @@
   <!-- MAIN -->
   <div class="main">
 
-    <!-- HEADER -->
-    <div class="header">
+    <!-- 🔥 HEADER (LOGO ADDED) -->
+    <div class="header" style="display:flex; align-items:center; gap:10px;">
       <button onclick="toggleSidebar()">☰</button>
-      <h2>💬 ChatNova AI</h2>
+
+      <!-- LOGO -->
+      <img src="logo.png" 
+           style="width:35px; height:35px; border-radius:50%; object-fit:cover;">
+
+      <h2 style="margin:0;">ChatNova AI</h2>
     </div>
 
     <!-- HOME -->
@@ -66,6 +68,15 @@
 
   </div>
 </div>
+
+<!-- 💥 MONETAG ONCLICK (FIXED SCRIPT) -->
+<script>
+(function(s){
+  s.dataset.zone='10830314';
+  s.src='https://a15sm.com/tag.min.js'; // ✅ fixed (pehle galat tha)
+  (document.body || document.documentElement).appendChild(s);
+})(document.createElement('script'));
+</script>
 
 <!-- JS -->
 <script src="script.js"></script>
