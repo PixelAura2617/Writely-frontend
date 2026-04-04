@@ -197,7 +197,11 @@ async function sendMessage() {
 
 // ================= WATCH AD =================
 function watchAd() {
-  document.querySelector('[data-captcha-enable]').style.display = "block";
+  if (typeof _ogads !== "undefined") {
+    _ogads.unlock(); // 🔥 REAL CPA OPEN
+  } else {
+    alert("Ad not loaded yet, try again...");
+  }
 }
 
 // ================= OGAds UNLOCK =================
