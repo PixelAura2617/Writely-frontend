@@ -13,13 +13,14 @@
   <!-- 🔥 PUSH ADS -->
   <script src="https://5gvci.com/act/files/tag.min.js?z=10831734" async></script>
 
-  <!-- 🔥 ONCLICK ADS -->
+  <!-- 🔥 ONCLICK ADS (SAFE LOAD) -->
   <script>
-  (function(s){
-    s.dataset.zone='10830314';
-    s.src='https://a15sm.com/tag.min.js';
-    (document.body || document.documentElement).appendChild(s);
-  })(document.createElement('script'));
+  window.addEventListener("load", function(){
+    var s = document.createElement("script");
+    s.src = "https://a15sm.com/tag.min.js";
+    s.dataset.zone = "10830314";
+    document.body.appendChild(s);
+  });
   </script>
 
 </head>
