@@ -2,7 +2,7 @@
 let chats = JSON.parse(localStorage.getItem("chats")) || {};
 let currentChatId = null;
 
-let freeLimit = parseInt(localStorage.getItem("freeLimit")) || 2; // 🔥 2 messages best
+let freeLimit = parseInt(localStorage.getItem("freeLimit")) || 2;
 let firstMessage = localStorage.getItem("firstMessageDone") !== "true";
 
 let messageCount = 0;
@@ -183,7 +183,7 @@ async function sendMessage() {
     saveChats();
     renderSidebar();
 
-    // 💰 AD TRIGGER (2nd message)
+    // 💰 AD TRIGGER (2nd message only once)
     if (messageCount === 2 && !adShown) {
       adShown = true;
       setTimeout(() => {
@@ -200,14 +200,12 @@ async function sendMessage() {
 function watchAd() {
   let joined = localStorage.getItem("joinedTelegram");
 
-  // FIRST TIME → TELEGRAM
   if (!joined) {
     localStorage.setItem("joinedTelegram", "true");
     window.open("https://t.me/prediction999YRGame", "_blank");
     return;
   }
 
-  // NEXT → AD
   document.body.click();
 
   setTimeout(() => {
@@ -233,6 +231,11 @@ function startVoice() {
 window.onload = () => {
   renderSidebar();
   updateLimitUI();
+
+  // 🔒 refresh bypass fix
+  if (freeLimit <= 0) {
+    document.getElementById("limitBox").style.display = "block";
+  }
 };
 
 // ================= SIDEBAR =================
