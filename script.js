@@ -3,7 +3,7 @@ let chats = JSON.parse(localStorage.getItem("chats")) || {};
 let currentChatId = null;
 
 let freeLimit = parseInt(localStorage.getItem("freeLimit")) || 3;
-let firstMessage = true;
+let firstMessage = localStorage.getItem("firstMessageDone") !== "true";
 
 // ================= SAVE =================
 function saveChats() {
@@ -30,10 +30,7 @@ function newChat() {
 // ================= DELETE CHAT =================
 function deleteChat(id) {
   delete chats[id];
-
-  if (currentChatId === id) {
-    currentChatId = null;
-  }
+  if (currentChatId === id) currentChatId = null;
 
   saveChats();
   renderSidebar();
@@ -53,7 +50,6 @@ function renderSidebar() {
 
     let title = document.createElement("span");
     title.innerText = chats[id].title;
-
     title.onclick = () => {
       currentChatId = id;
       renderChat();
@@ -62,7 +58,6 @@ function renderSidebar() {
     let menuBtn = document.createElement("span");
     menuBtn.innerText = "⋮";
     menuBtn.className = "menu-btn";
-
     menuBtn.onclick = (e) => toggleMenu(e, id);
 
     let menu = document.createElement("div");
@@ -74,7 +69,6 @@ function renderSidebar() {
     del.onclick = () => deleteChat(id);
 
     menu.appendChild(del);
-
     div.appendChild(title);
     div.appendChild(menuBtn);
     div.appendChild(menu);
@@ -122,13 +116,14 @@ async function sendMessage() {
 
   if (!text) return;
 
-  // 🎁 FIRST MESSAGE AD TRIGGER
+  // 🎁 FIRST MESSAGE LOGIC (clean)
   if (firstMessage) {
     firstMessage = false;
+    localStorage.setItem("firstMessageDone", "true");
 
     setTimeout(() => {
-      window.open("https://pl29048065.profitablecpmratenetwork.com/65/c3/c0/65c3c042046896707c773cdce71b17fc.js");
-    }, 1000);
+      alert("🎁 You unlocked bonus messages!");
+    }, 800);
   }
 
   // 🔒 LIMIT CHECK
@@ -208,7 +203,6 @@ function watchAd() {
 // ================= OGAds UNLOCK =================
 function og_converted() {
   freeLimit += 5;
-
   localStorage.setItem("freeLimit", freeLimit);
 
   document.querySelector('[data-captcha-enable]').style.display = "none";
@@ -227,7 +221,7 @@ function toggleMenu(e, id) {
   });
 
   let menu = document.getElementById("menu-" + id);
-  menu.style.display = "block";
+  if (menu) menu.style.display = "block";
 }
 
 document.body.addEventListener("click", () => {
@@ -263,7 +257,7 @@ function toggleSidebar() {
   document.querySelector(".sidebar").classList.toggle("active");
 }
 
-// ================= TYPING EFFECT =================
+// ================= TYPING =================
 function typeText(element, text, speed = 15) {
   let i = 0;
   element.innerHTML = "";
