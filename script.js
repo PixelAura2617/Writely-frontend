@@ -11,7 +11,7 @@ function saveChats() {
   localStorage.setItem("freeLimit", freeLimit);
 }
 
-// ================= LIMIT UI =================
+// ================= UI =================
 function updateLimitUI() {
   let el = document.getElementById("limitCount");
   if (el) el.innerText = freeLimit;
@@ -27,11 +27,10 @@ function newChat() {
   renderChat();
 }
 
-// ================= DELETE CHAT =================
+// ================= DELETE =================
 function deleteChat(id) {
   delete chats[id];
   if (currentChatId === id) currentChatId = null;
-
   saveChats();
   renderSidebar();
   renderChat();
@@ -55,29 +54,19 @@ function renderSidebar() {
       renderChat();
     };
 
-    let menuBtn = document.createElement("span");
-    menuBtn.innerText = "⋮";
-    menuBtn.className = "menu-btn";
-    menuBtn.onclick = (e) => toggleMenu(e, id);
-
-    let menu = document.createElement("div");
-    menu.className = "menu-dropdown";
-    menu.id = "menu-" + id;
-
-    let del = document.createElement("div");
-    del.innerText = "Delete";
+    let del = document.createElement("span");
+    del.innerText = "🗑";
+    del.style.marginLeft = "10px";
     del.onclick = () => deleteChat(id);
 
-    menu.appendChild(del);
     div.appendChild(title);
-    div.appendChild(menuBtn);
-    div.appendChild(menu);
+    div.appendChild(del);
 
     chatList.appendChild(div);
   });
 }
 
-// ================= RENDER CHAT =================
+// ================= CHAT =================
 function renderChat() {
   const chatBox = document.getElementById("chatBox");
   if (!chatBox) return;
@@ -91,7 +80,7 @@ function renderChat() {
   });
 }
 
-// ================= ADD MESSAGE =================
+// ================= MESSAGE UI =================
 function addMessage(text, sender) {
   const chatBox = document.getElementById("chatBox");
 
@@ -116,19 +105,17 @@ async function sendMessage() {
 
   if (!text) return;
 
-  // 🎁 FIRST MESSAGE LOGIC (clean)
+  // 🎁 FIRST BONUS
   if (firstMessage) {
     firstMessage = false;
     localStorage.setItem("firstMessageDone", "true");
-
-    setTimeout(() => {
-      alert("🎁 You unlocked bonus messages!");
-    }, 800);
+    freeLimit += 2;
+    alert("🎁 Bonus unlocked!");
   }
 
-  // 🔒 LIMIT CHECK
+  // 🔒 LIMIT
   if (freeLimit <= 0) {
-    document.querySelector('[data-captcha-enable]').style.display = "block";
+    alert("Limit reached! Click unlock.");
     return;
   }
 
@@ -172,8 +159,6 @@ async function sendMessage() {
       data?.choices?.[0]?.message?.content ||
       "No response 😅";
 
-    reply = reply.trim() || "Server waking up...";
-
     let msgEl = addMessage("", "bot");
     typeText(msgEl, reply);
 
@@ -195,53 +180,17 @@ async function sendMessage() {
   }
 }
 
-// ================= WATCH AD =================
+// ================= 🔥 UNLOCK (MONETAG STYLE) =================
 function watchAd() {
-  if (typeof _ogads !== "undefined") {
-    _ogads.unlock();
-  } else {
-    alert("Loading ad... try again in 3 sec");
-    
-    // 🔥 auto retry
-    setTimeout(() => {
-      if (typeof _ogads !== "undefined") {
-        _ogads.unlock();
-      } else {
-        alert("Ad failed to load 😢");
-      }
-    }, 3000);
-  }
-}
+  alert("🔓 Click anywhere to continue...");
 
-// ================= OGAds UNLOCK =================
-function og_converted() {
-  freeLimit += 5;
-  localStorage.setItem("freeLimit", freeLimit);
-
-  document.querySelector('[data-captcha-enable]').style.display = "none";
-
+  // Monetag onclick trigger hota hai user click pe
+  freeLimit += 3;
+  saveChats();
   updateLimitUI();
 
-  alert("🚀 5 Messages Unlocked!");
+  alert("🚀 Messages unlocked!");
 }
-
-// ================= MENU =================
-function toggleMenu(e, id) {
-  e.stopPropagation();
-
-  document.querySelectorAll(".menu-dropdown").forEach(m => {
-    m.style.display = "none";
-  });
-
-  let menu = document.getElementById("menu-" + id);
-  if (menu) menu.style.display = "block";
-}
-
-document.body.addEventListener("click", () => {
-  document.querySelectorAll(".menu-dropdown").forEach(m => {
-    m.style.display = "none";
-  });
-});
 
 // ================= VOICE =================
 function startVoice() {
@@ -284,15 +233,4 @@ function typeText(element, text, speed = 15) {
   }
 
   typing();
-}
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", function () {
-    navigator.serviceWorker.register("/sw.js")
-      .then(function () {
-        console.log("SW registered");
-      })
-      .catch(function (err) {
-        console.log("SW error:", err);
-      });
-  });
 }
