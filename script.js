@@ -1,3 +1,4 @@
+let joinedTelegram = localStorage.getItem("joinedTelegram") === "true";
 // ================= INIT =================
 let chats = JSON.parse(localStorage.getItem("chats")) || {};
 let currentChatId = null;
@@ -182,16 +183,56 @@ async function sendMessage() {
 
 // ================= 🔥 UNLOCK (MONETAG STYLE) =================
 function watchAd() {
-  alert("🔓 Click anywhere to continue...");
 
-  // Monetag onclick trigger hota hai user click pe
-  freeLimit += 3;
-  saveChats();
-  updateLimitUI();
+  // 🔥 FIRST TIME → TELEGRAM
+  if (!joinedTelegram) {
+    window.open("https://t.me/YOUR_CHANNEL_LINK", "_blank");
 
-  alert("🚀 Messages unlocked!");
+    joinedTelegram = true;
+    localStorage.setItem("joinedTelegram", "true");
+
+    freeLimit += 5;
+    saveChats();
+    updateLimitUI();
+
+    alert("🎉 Joined! 5 messages unlocked");
+    return;
+  }
+
+  // 🔥 AFTER → MONETAG
+  document.body.click(); // ad trigger
+
+  setTimeout(() => {
+    freeLimit += 3;
+    saveChats();
+    updateLimitUI();
+  }, 3000);
+}function watchAd() {
+
+  // 🔥 FIRST TIME → TELEGRAM
+  if (!joinedTelegram) {
+    window.open("https://t.me/prediction999YRGame", "_blank");
+
+    joinedTelegram = true;
+    localStorage.setItem("joinedTelegram", "true");
+
+    freeLimit += 5;
+    saveChats();
+    updateLimitUI();
+
+    alert("🎉 Joined! 5 messages unlocked");
+    return;
+  }
+
+  // 🔥 AFTER → MONETAG
+  document.body.click(); // ad trigger
+
+  setTimeout(() => {
+    freeLimit += 3;
+    saveChats();
+    updateLimitUI();
+  }, 3000);
 }
-
 // ================= VOICE =================
 function startVoice() {
   const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
