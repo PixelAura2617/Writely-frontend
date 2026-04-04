@@ -3,6 +3,7 @@ let chats = JSON.parse(localStorage.getItem("chats")) || {};
 let currentChatId = null;
 
 let freeLimit = parseInt(localStorage.getItem("freeLimit")) || 3;
+let firstMessage = true;
 
 // ================= SAVE =================
 function saveChats() {
@@ -121,7 +122,16 @@ async function sendMessage() {
 
   if (!text) return;
 
-  // 🔥 LIMIT CHECK (OGAds show)
+  // 🎁 FIRST MESSAGE AD TRIGGER
+  if (firstMessage) {
+    firstMessage = false;
+
+    setTimeout(() => {
+      window.open("https://pl29048065.profitablecpmratenetwork.com/65/c3/c0/65c3c042046896707c773cdce71b17fc.js");
+    }, 1000);
+  }
+
+  // 🔒 LIMIT CHECK
   if (freeLimit <= 0) {
     document.querySelector('[data-captcha-enable]').style.display = "block";
     return;
@@ -143,7 +153,7 @@ async function sendMessage() {
 
   input.value = "";
 
-  let typing = addMessage("Thinking...", "bot");
+  let typing = addMessage("Typing...", "bot");
 
   try {
     let res = await fetch("https://writely-backend-x2y0.onrender.com/generate", {
@@ -190,13 +200,14 @@ async function sendMessage() {
   }
 }
 
-// ================= WATCH AD (BUTTON) =================
+// ================= WATCH AD =================
 function watchAd() {
   document.querySelector('[data-captcha-enable]').style.display = "block";
 }
+
 // ================= OGAds UNLOCK =================
 function og_converted() {
-  freeLimit += 5; // reward
+  freeLimit += 5;
 
   localStorage.setItem("freeLimit", freeLimit);
 
@@ -246,6 +257,8 @@ window.onload = () => {
   renderSidebar();
   updateLimitUI();
 };
+
+// ================= SIDEBAR =================
 function toggleSidebar() {
   document.querySelector(".sidebar").classList.toggle("active");
 }
