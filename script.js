@@ -285,3 +285,14 @@ function typeText(element, text, speed = 15) {
 
   typing();
 }
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", function () {
+    navigator.serviceWorker.register("/sw.js")
+      .then(function () {
+        console.log("SW registered");
+      })
+      .catch(function (err) {
+        console.log("SW error:", err);
+      });
+  });
+}
