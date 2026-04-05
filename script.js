@@ -198,6 +198,7 @@ async function sendMessage() {
 
 // ================= 🔥 UNLOCK =================
 function watchAd() {
+
   let joined = localStorage.getItem("joinedTelegram");
 
   if (!joined) {
@@ -206,7 +207,8 @@ function watchAd() {
     return;
   }
 
-  document.body.click();
+  // ✅ REAL AD CALL
+  showAd();
 
   setTimeout(() => {
     freeLimit += 3;
@@ -215,7 +217,6 @@ function watchAd() {
     alert("🚀 Messages unlocked!");
   }, 3000);
 }
-
 // ================= VOICE =================
 function startVoice() {
   const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
