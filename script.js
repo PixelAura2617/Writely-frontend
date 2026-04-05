@@ -195,6 +195,13 @@ async function sendMessage() {
     typing.innerText = "⚠️ Network error";
   }
 }
+function showAd(){
+  if (typeof window.show_10830314 === "function") {
+    window.show_10830314();
+  } else {
+    console.log("Ad not loaded yet");
+  }
+}
 
 // ================= 🔥 UNLOCK =================
 function watchAd() {
